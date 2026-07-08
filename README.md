@@ -14,7 +14,6 @@ clear-energy-takehome/
 │   └── admin-mobile/        # Admin Mobile (Pending Actions)
 ├── packages/
 │   └── shared/              # Shared theme, types, client, and <OrderCard />
-├── docs/                    # PRDs, UIPRD, and Assignment brief
 ├── mock-api.json            # json-server mock database
 ├── package.json             # Root workspace configuration
 └── start-all.sh             # Launch script for all services
@@ -77,34 +76,4 @@ npm test
 
 Runs the Vitest unit test for the price-formatting function (paise to INR with Indian locale).
 
----
 
-## Out of Scope & Cuts
-
-- **Authentication**: Hardcoded user IDs (`c-001`, `d-101`, `a-201`) in query params.
-- **Persistent DB Writes**: Cache-only mutations; json-server is read-only.
-- **Push Notifications, Payments, E2E tests**: Per brief instructions.
-
----
-
-## AI Usage
-
-- **Tool**: Claude Code (opencode CLI)
-- **Scope**: Scaffolded monorepo structure, package.json workspaces config, all shared package files (types, API client, OrderCard, tokens), all three app screens with loading/error/empty/success states, tests, README.
-- **Acceptance**: ~90% accepted as generated, minor edits to OrderCard prop interface and style constants to match mockups more closely.
-
----
-
-## Hours Spent
-
-- **Actual time**: ~1.5 hours of focused development.
-
----
-
-## What I Would Add Given More Time
-
-- Turborepo pipeline for cached builds across apps
-- OpenAPI codegen for types from `openapi.yaml`
-- Order detail screen (as tested in the live review)
-- Persistent mutations via PATCH/POST endpoints
-- Pull-to-refresh with optimistic updates
