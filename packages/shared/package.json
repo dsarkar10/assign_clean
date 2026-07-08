@@ -1,0 +1,19 @@
+{
+  "name": "@clear-energy/shared",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@react-navigation/native": "^7.3.8",
+    "@react-navigation/native-stack": "^7.17.10",
+    "expo-blur": "~14.0.1",
+    "expo-linear-gradient": "~14.0.1",
+    "react-native-reanimated": "~3.16.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.0"
+  },
+  "scripts": {
+    "test": "vitest run"
+  }
+}

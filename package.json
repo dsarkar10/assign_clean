@@ -1,0 +1,31 @@
+{
+  "name": "clear-energy-takehome",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "vitest run --config packages/shared/vitest.config.ts packages/shared/utils/formatPrice.test.ts",
+    "api": "npx json-server mock-api.json --port 4000",
+    "customer": "npm start --workspace=apps/customer",
+    "driver": "npm start --workspace=apps/driver",
+    "admin": "npm start --workspace=apps/admin-mobile",
+    "start:all": "bash start-all.sh"
+  },
+  "dependencies": {
+    "@expo-google-fonts/jetbrains-mono": "^0.4.1",
+    "@expo-google-fonts/manrope": "^0.4.2",
+    "@expo/metro-runtime": "~57.0.3",
+    "@tanstack/react-query": "^5.101.2",
+    "expo-splash-screen": "~57.0.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.79.5",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "4.25.2",
+    "react-native-web": "^0.21.2",
+    "vitest": "^4.1.10"
+  }
+}

@@ -1,0 +1,58 @@
+import React from 'react';
+import { BlurView } from 'expo-blur';
+import { Pressable, StyleSheet, View, ViewStyle, StyleProp } from 'react-native';
+import { colors } from '../theme/tokens';
+
+interface GlassIconButtonProps {
+  children: React.ReactNode;
+  onPress?: () => void;
+  style?: StyleProp<ViewStyle>;
+  size?: number;
+}
+
+export function GlassIconButton({ children, onPress, style, size = 44 }: GlassIconButtonProps) {
+  const borderRadius = size / 2;
+  return (
+    <Pressable
+      onPress={onPress}
+      style={[styles.wrapper, { width: size, height: size, borderRadius }, style]}
+    >
+      <BlurView
+        intensity={35}
+        tint="dark"
+        style={[StyleSheet.absoluteFill, { borderRadius }]}
+      />
+      <View style={[StyleSheet.absoluteFill, styles.tint, { borderRadius }]} />
+      <View style={[styles.highlight, { borderRadius }]} />
+      <View style={styles.iconWrapper}>{children}</View>
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  wrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+  },
+  tint: {
+    backgroundColor: colors.glassFill,
+    zIndex: 1,
+  },
+  highlight: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: colors.glassHighlight,
+    zIndex: 2,
+  },
+  iconWrapper: {
+    zIndex: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
