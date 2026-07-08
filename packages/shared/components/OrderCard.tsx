@@ -7,106 +7,91 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { OrderCardData } from '../types/order';
+import { CardItem } from '../types/order';
 import { colors, spacing, radius, typography } from '../theme/tokens';
-import { formatPaiseToINR } from '../utils/formatPrice';
+import { toINR } from '../utils/formatPrice';
 
 export interface OrderCardProps {
-  variant: 'customer' | 'driver' | 'admin';
-  data: OrderCardData;
-  onActionPress?: () => void;
-  onStartTripPress?: () => void;
+  mode: 'order' | 'route' | 'queue';
+  data: CardItem;
+  onAction?: () => void;
+  onTrip?: () => void;
 }
 
-function PulsingPill({ label, color }: { label: string; color: string }) {
+function PulseBadge({ label, color }: { label: string; color: string }) {
   const opacity = useSharedValue(1);
   React.useEffect(() => {
-    opacity.value = withRepeat(
-      withTiming(0.5, { duration: 800 }),
-      -1,
-      true
-    );
+    opacity.value = withRepeat(withTiming(0.5, { duration: 800 }), -1, true);
   }, []);
   const animStyle = useAnimatedStyle(() => ({ opacity: opacity.value }), [opacity]);
   return (
-    <Animated.View style={[styles.pill, { backgroundColor: color }, animStyle]}>
-      <Text style={styles.pillText}>{label}</Text>
+    <Animated.View style={[styles.badge, { backgroundColor: color }, animStyle]}>
+      <Text style={styles.badgeText}>{label}</Text>
     </Animated.View>
   );
 }
 
-export function OrderCard({ variant, data, onActionPress, onStartTripPress }: OrderCardProps) {
-  const statusColorMap = {
+export function OrderCard({ mode, data, onAction, onTrip }: OrderCardProps) {
+  const colorMap = {
     success: colors.success,
     warning: colors.warning,
     error: colors.error,
     info: colors.info,
     default: colors.textMuted,
   };
-  const statusColor = statusColorMap[data.statusColorType ?? 'default'];
+  const chipColor = colorMap[data.tagVariant ?? 'default'];
 
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.imagePlaceholder}>
+    <View style={styles.card}>
+      <View style={styles.backdrop}>
         <LinearGradient
           colors={colors.scrimGradient}
           style={StyleSheet.absoluteFill}
           start={{ x: 0, y: 0.2 }}
           end={{ x: 0, y: 1 }}
         />
-
-        <View style={styles.content}>
-          <View style={styles.titleRow}>
-            {variant === 'driver' && data.seqLabel != null && (
-              <View style={styles.seqBadge}>
-                <Text style={styles.seqText}>{data.seqLabel}</Text>
+        <View style={styles.inner}>
+          <View style={styles.headRow}>
+            {mode === 'route' && data.badge != null && (
+              <View style={styles.seqCircle}>
+                <Text style={styles.seqNum}>{data.badge}</Text>
               </View>
             )}
-            <Text style={styles.title} numberOfLines={1}>{data.title}</Text>
+            <Text style={styles.heading} numberOfLines={1}>{data.heading}</Text>
           </View>
-
-          {data.subtitle && (
-            <Text style={styles.subtitle} numberOfLines={2}>{data.subtitle}</Text>
+          {data.body && <Text style={styles.body} numberOfLines={2}>{data.body}</Text>}
+          {mode === 'order' && data.value != null && (
+            <Text style={styles.price}>{toINR(data.value)}</Text>
           )}
-
-          {variant === 'customer' && data.amountPaise != null && (
-            <Text style={styles.price}>{formatPaiseToINR(data.amountPaise)}</Text>
-          )}
-
-          <View style={styles.footerRow}>
-            {variant === 'customer' && data.statusLabel && (
-              <View style={[styles.pill, { backgroundColor: statusColor }]}>
-                <Text style={styles.pillText}>{data.statusLabel}</Text>
+          <View style={styles.footer}>
+            {mode === 'order' && data.tag && (
+              <View style={[styles.badge, { backgroundColor: chipColor }]}>
+                <Text style={styles.badgeText}>{data.tag}</Text>
               </View>
             )}
-
-            {variant === 'driver' && (
-              <View style={styles.driverActions}>
-                {data.statusLabel && (
-                  <View style={[styles.etaBadge, { backgroundColor: statusColor }]}>
-                    <Text style={styles.etaText}>ETA</Text>
-                    <Text style={styles.etaValue}>{data.statusLabel}</Text>
+            {mode === 'route' && (
+              <View style={styles.routeRow}>
+                {data.tag && (
+                  <View style={[styles.etaBox, { backgroundColor: chipColor }]}>
+                    <Text style={styles.etaLbl}>ETA</Text>
+                    <Text style={styles.etaVal}>{data.tag}</Text>
                   </View>
                 )}
-                {data.statusColorType !== 'success' && (
-                  <Pressable style={styles.startTripButton} onPress={onStartTripPress}>
-                    <Text style={styles.startTripText}>
-                      {data.statusColorType === 'info' ? 'Complete Trip' : 'Start Trip'}
+                {data.tagVariant !== 'success' && (
+                  <Pressable style={styles.ctaBtn} onPress={onTrip}>
+                    <Text style={styles.ctaText}>
+                      {data.tagVariant === 'info' ? 'Complete Trip' : 'Start Trip'}
                     </Text>
                   </Pressable>
                 )}
               </View>
             )}
-
-            {variant === 'admin' && data.actionLabel && (
-              data.statusColorType === 'error' ? (
-                <PulsingPill label={data.actionLabel} color={statusColor} />
+            {mode === 'queue' && data.cta && (
+              data.tagVariant === 'error' ? (
+                <PulseBadge label={data.cta} color={chipColor} />
               ) : (
-                <Pressable
-                  style={[styles.pill, { backgroundColor: statusColor }]}
-                  onPress={onActionPress}
-                >
-                  <Text style={styles.pillText}>{data.actionLabel}</Text>
+                <Pressable style={[styles.badge, { backgroundColor: chipColor }]} onPress={onAction}>
+                  <Text style={styles.badgeText}>{data.cta}</Text>
                 </Pressable>
               )
             )}
@@ -118,28 +103,26 @@ export function OrderCard({ variant, data, onActionPress, onStartTripPress }: Or
 }
 
 const styles = StyleSheet.create({
-  cardContainer: {
+  card: {
     backgroundColor: colors.bgCard,
     borderRadius: radius.lg,
     overflow: 'hidden',
     marginBottom: spacing.md,
     minHeight: 140,
   },
-  imagePlaceholder: {
+  backdrop: {
     flex: 1,
     backgroundColor: '#1E1E24',
     justifyContent: 'flex-end',
   },
-  content: {
-    padding: spacing.md,
-  },
-  titleRow: {
+  inner: { padding: spacing.md },
+  headRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: spacing.xs,
     gap: spacing.sm,
   },
-  seqBadge: {
+  seqCircle: {
     width: 22,
     height: 22,
     borderRadius: 11,
@@ -147,19 +130,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  seqText: {
+  seqNum: {
     fontFamily: typography.fontFamily.mono,
     fontSize: typography.size.xs,
     color: colors.textPrimary,
     fontWeight: 'bold',
   },
-  title: {
+  heading: {
     fontFamily: typography.fontFamily.bodyMedium,
     fontSize: typography.size.lg,
     color: colors.textPrimary,
     flex: 1,
   },
-  subtitle: {
+  body: {
     fontFamily: typography.fontFamily.body,
     fontSize: typography.size.sm,
     color: colors.textSecondary,
@@ -172,56 +155,56 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     letterSpacing: 0.5,
   },
-  footerRow: {
+  footer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     marginTop: spacing.xs,
   },
-  driverActions: {
+  routeRow: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
     justifyContent: 'space-between',
   },
-  etaBadge: {
+  etaBox: {
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: radius.pill,
     alignItems: 'center',
     minWidth: 64,
   },
-  etaText: {
+  etaLbl: {
     fontFamily: typography.fontFamily.mono,
     fontSize: 9,
     color: colors.bg,
     letterSpacing: 1,
     opacity: 0.7,
   },
-  etaValue: {
+  etaVal: {
     fontFamily: typography.fontFamily.mono,
     fontSize: typography.size.sm,
     color: colors.bg,
     fontWeight: 'bold',
   },
-  pill: {
+  badge: {
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: radius.pill,
   },
-  pillText: {
+  badgeText: {
     fontFamily: typography.fontFamily.mono,
     fontSize: typography.size.xs,
     color: colors.bg,
     fontWeight: 'bold',
   },
-  startTripButton: {
+  ctaBtn: {
     backgroundColor: colors.accent,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.pill,
   },
-  startTripText: {
+  ctaText: {
     fontFamily: typography.fontFamily.bodyMedium,
     fontSize: typography.size.sm,
     color: colors.textPrimary,

@@ -1,51 +1,47 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Pressable, RefreshControl } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { endpoints, PendingAction, OrderCard, OrderCardData, colors, typography, spacing } from '@clear-energy/shared';
+import { api, PendingAction, OrderCard, CardItem, colors, typography, spacing } from '@clear-energy/shared';
 import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
 
 export function PendingActionsScreen() {
   const queryClient = useQueryClient();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['pending-actions', 'a-201'],
-    queryFn: ({ signal }) => endpoints.getPendingActions('a-201', signal),
+    queryFn: ({ signal }) => api.getPendingActions('a-201', signal),
   });
 
-  const mapToCardData = (action: PendingAction): OrderCardData => {
-    let statusColorType: OrderCardData['statusColorType'] = 'default';
-    if (action.priority === 'breached') statusColorType = 'error';
-    if (action.priority === 'high') statusColorType = 'warning';
-    if (action.priority === 'med') statusColorType = 'info';
-    if (action.priority === 'low') statusColorType = 'success';
+  const toCardItem = (a: PendingAction): CardItem => {
+    let tagVariant: CardItem['tagVariant'] = 'default';
+    if (a.priority === 'breached') tagVariant = 'error';
+    if (a.priority === 'high') tagVariant = 'warning';
+    if (a.priority === 'med') tagVariant = 'info';
+    if (a.priority === 'low') tagVariant = 'success';
 
-    const ageStr = action.ageMinutes >= 60
-      ? `${Math.floor(action.ageMinutes / 60)}h ${action.ageMinutes % 60}m`
-      : `${action.ageMinutes}m`;
-    const slaStr = action.slaMinutes
-      ? ` · SLA ${action.slaMinutes}m`
-      : '';
-    const ageLine = `Pending ${ageStr}${slaStr}`;
+    const age = a.ageMinutes >= 60
+      ? `${Math.floor(a.ageMinutes / 60)}h ${a.ageMinutes % 60}m`
+      : `${a.ageMinutes}m`;
+    const sla = a.slaMinutes ? ` · SLA ${a.slaMinutes}m` : '';
 
     return {
-      id: action.id,
-      title: action.category.toUpperCase().replace(/_/g, ' '),
-      subtitle: `${action.summary}\n${ageLine}`,
-      actionLabel: action.action ? action.action.toUpperCase() : 'REVIEW',
-      statusColorType,
+      id: a.id,
+      heading: a.category.toUpperCase().replace(/_/g, ' '),
+      body: `${a.summary}\nPending ${age}${sla}`,
+      cta: a.action ? a.action.toUpperCase() : 'REVIEW',
+      tagVariant,
     };
   };
 
-  const handleAction = (id: string) => {
-    console.log(`Action handled for ${id}`);
-    queryClient.setQueryData<PendingAction[]>(['pending-actions', 'a-201'], (oldData) => {
-      if (!oldData) return oldData;
-      return oldData.filter((action) => action.id !== id);
+  const dismiss = (id: string) => {
+    queryClient.setQueryData<PendingAction[]>(['pending-actions', 'a-201'], (prev) => {
+      if (!prev) return prev;
+      return prev.filter((x) => x.id !== id);
     });
   };
 
   if (isLoading) {
     return (
-      <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.centerContainer}>
+      <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.center}>
         <ActivityIndicator size="large" color={colors.accent} />
       </Animated.View>
     );
@@ -53,9 +49,9 @@ export function PendingActionsScreen() {
 
   if (isError) {
     return (
-      <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.centerContainer}>
-        <Text style={styles.errorText}>Failed to load pending actions.</Text>
-        <Pressable style={styles.retryButton} onPress={() => refetch()}>
+      <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.center}>
+        <Text style={styles.error}>Failed to load pending actions.</Text>
+        <Pressable style={styles.retry} onPress={() => refetch()}>
           <Text style={styles.retryText}>Retry</Text>
         </Pressable>
       </Animated.View>
@@ -64,10 +60,10 @@ export function PendingActionsScreen() {
 
   if (!data || data.length === 0) {
     return (
-      <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.centerContainer}>
-        <Text style={styles.emptyIcon}>✅</Text>
+      <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.center}>
+        <Text style={styles.emoji}>✅</Text>
         <Text style={styles.emptyTitle}>All caught up!</Text>
-        <Text style={styles.emptySubtext}>No pending actions in your queue right now.</Text>
+        <Text style={styles.emptySub}>No pending actions in your queue right now.</Text>
       </Animated.View>
     );
   }
@@ -77,22 +73,13 @@ export function PendingActionsScreen() {
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={styles.list}
         refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => refetch()}
-            tintColor={colors.accent}
-            colors={[colors.accent]}
-          />
+          <RefreshControl refreshing={false} onRefresh={() => refetch()} tintColor={colors.accent} colors={[colors.accent]} />
         }
         renderItem={({ item, index }) => (
           <Animated.View entering={FadeInDown.delay(index * 60).duration(280)} exiting={FadeOut}>
-            <OrderCard
-              variant="admin"
-              data={mapToCardData(item)}
-              onActionPress={() => handleAction(item.id)}
-            />
+            <OrderCard mode="queue" data={toCardItem(item)} onAction={() => dismiss(item.id)} />
           </Animated.View>
         )}
       />
@@ -101,51 +88,13 @@ export function PendingActionsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.bg,
-  },
-  centerContainer: {
-    flex: 1,
-    backgroundColor: colors.bg,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.md,
-  },
-  listContent: {
-    padding: spacing.md,
-  },
-  errorText: {
-    fontFamily: typography.fontFamily.body,
-    fontSize: typography.size.base,
-    color: colors.error,
-    marginBottom: spacing.md,
-  },
-  retryButton: {
-    backgroundColor: colors.pillActive,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: 999,
-  },
-  retryText: {
-    fontFamily: typography.fontFamily.bodyMedium,
-    fontSize: typography.size.base,
-    color: colors.pillActiveText,
-  },
-  emptyIcon: {
-    fontSize: 56,
-    marginBottom: spacing.md,
-  },
-  emptyTitle: {
-    fontFamily: typography.fontFamily.bodyMedium,
-    fontSize: typography.size.lg,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-  emptySubtext: {
-    fontFamily: typography.fontFamily.body,
-    fontSize: typography.size.sm,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
+  container: { flex: 1, backgroundColor: colors.bg },
+  center: { flex: 1, backgroundColor: colors.bg, justifyContent: 'center', alignItems: 'center', padding: spacing.md },
+  list: { padding: spacing.md },
+  error: { fontFamily: typography.fontFamily.body, fontSize: typography.size.base, color: colors.error, marginBottom: spacing.md },
+  retry: { backgroundColor: colors.pillActive, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: 999 },
+  retryText: { fontFamily: typography.fontFamily.bodyMedium, fontSize: typography.size.base, color: colors.pillActiveText },
+  emoji: { fontSize: 56, marginBottom: spacing.md },
+  emptyTitle: { fontFamily: typography.fontFamily.bodyMedium, fontSize: typography.size.lg, color: colors.textPrimary, marginBottom: spacing.xs },
+  emptySub: { fontFamily: typography.fontFamily.body, fontSize: typography.size.sm, color: colors.textSecondary, textAlign: 'center' },
 });

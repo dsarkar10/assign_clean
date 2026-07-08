@@ -44,13 +44,13 @@ export interface PendingAction {
   action?: PendingActionType;
 }
 
-export interface OrderCardData {
+export interface CardItem {
   id: string;
-  title: string;
-  subtitle?: string;
-  amountPaise?: number;
-  seqLabel?: string;
-  statusLabel?: string;
-  statusColorType?: 'success' | 'warning' | 'error' | 'info' | 'default';
-  actionLabel?: string;
+  heading: string;
+  body?: string;
+  value?: number;
+  badge?: string;
+  tag?: string;
+  tagVariant?: 'success' | 'warning' | 'error' | 'info' | 'default';
+  cta?: string;
 }
