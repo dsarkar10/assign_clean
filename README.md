@@ -55,7 +55,7 @@ All core business logic and presentation lives in `packages/shared`:
 
 1. **Strict TypeScript (`packages/shared/types/`)**: Shared `Order`, `TripStop`, and `PendingAction` types ensure one source of truth.
 2. **API Client (`packages/shared/api/`)**: Typed fetch wrapper handling HTTP errors, network errors, abort on unmount, and idempotency key headers.
-3. **Unified `<OrderCard />`**: Single component adapting layout via `variant` prop (`customer` | `driver` | `admin`).
+3. **Unified `<OrderCard />`**: Single component adapting layout via `mode` prop (`order` | `route` | `queue`).
 4. **Dark Theme**: Colors, fonts (Manrope + JetBrains Mono), spacing, and glassmorphism in `@clear-energy/shared/theme/tokens`.
 
 ---
