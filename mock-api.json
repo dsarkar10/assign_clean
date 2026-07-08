@@ -1,0 +1,261 @@
+{
+  "orders": [
+    {
+      "id": "ord-101",
+      "customerId": "cust-1",
+      "customerName": "Rajesh Kumar",
+      "address": "42 Jubilee Hills, Road No 10, Hyderabad",
+      "sku": "CYL-14.2",
+      "quantity": 2,
+      "amountPaise": 246800,
+      "status": "delivered",
+      "createdAt": "2026-07-08T06:00:00Z"
+    },
+    {
+      "id": "ord-102",
+      "customerId": "cust-1",
+      "customerName": "Rajesh Kumar",
+      "address": "42 Jubilee Hills, Road No 10, Hyderabad",
+      "sku": "CYL-5",
+      "quantity": 1,
+      "amountPaise": 98400,
+      "status": "delivered",
+      "createdAt": "2026-07-01T08:30:00Z"
+    },
+    {
+      "id": "ord-103",
+      "customerId": "cust-2",
+      "customerName": "Priya Sharma",
+      "address": "15 Banjara Hills, Road No 5, Hyderabad",
+      "sku": "CYL-14.2",
+      "quantity": 1,
+      "amountPaise": 123400,
+      "status": "out_for_delivery",
+      "createdAt": "2026-07-08T07:00:00Z"
+    },
+    {
+      "id": "ord-104",
+      "customerId": "cust-2",
+      "customerName": "Priya Sharma",
+      "address": "15 Banjara Hills, Road No 5, Hyderabad",
+      "sku": "CYL-5",
+      "quantity": 3,
+      "amountPaise": 295200,
+      "status": "pending",
+      "createdAt": "2026-07-08T09:00:00Z"
+    },
+    {
+      "id": "ord-105",
+      "customerId": "cust-3",
+      "customerName": "Amit Singh",
+      "address": "8A Film Nagar, Hyderabad",
+      "sku": "CYL-14.2",
+      "quantity": 2,
+      "amountPaise": 246800,
+      "status": "pending",
+      "createdAt": "2026-07-08T10:00:00Z"
+    },
+    {
+      "id": "ord-106",
+      "customerId": "cust-3",
+      "customerName": "Amit Singh",
+      "address": "8A Film Nagar, Hyderabad",
+      "sku": "CYL-5",
+      "quantity": 1,
+      "amountPaise": 98400,
+      "status": "failed",
+      "createdAt": "2026-07-07T14:00:00Z"
+    },
+    {
+      "id": "ord-107",
+      "customerId": "cust-3",
+      "customerName": "Amit Singh",
+      "address": "8A Film Nagar, Hyderabad",
+      "sku": "CYL-14.2",
+      "quantity": 1,
+      "amountPaise": 123400,
+      "status": "delivered",
+      "createdAt": "2026-07-06T11:00:00Z"
+    }
+  ],
+  "trips": [
+    {
+      "id": "trip-1",
+      "driverId": "driver-1",
+      "date": "2026-07-08",
+      "stops": [
+        {
+          "id": "stop-101",
+          "orderId": "ord-103",
+          "customerName": "Priya Sharma",
+          "address": "15 Banjara Hills, Road No 5, Hyderabad, Telangana 500034",
+          "sku": "CYL-14.2",
+          "quantity": 1,
+          "amountPaise": 123400,
+          "status": "pending",
+          "eta": "2026-07-08T10:30:00Z",
+          "sortOrder": 1
+        },
+        {
+          "id": "stop-102",
+          "orderId": "ord-104",
+          "customerName": "Priya Sharma",
+          "address": "15 Banjara Hills, Road No 5, Hyderabad, Telangana 500034",
+          "sku": "CYL-5",
+          "quantity": 3,
+          "amountPaise": 295200,
+          "status": "pending",
+          "eta": "2026-07-08T11:15:00Z",
+          "sortOrder": 2
+        },
+        {
+          "id": "stop-103",
+          "orderId": "ord-105",
+          "customerName": "Amit Singh",
+          "address": "8A Film Nagar, Hyderabad, Telangana 500096",
+          "sku": "CYL-14.2",
+          "quantity": 2,
+          "amountPaise": 246800,
+          "status": "pending",
+          "eta": "2026-07-08T12:00:00Z",
+          "sortOrder": 3
+        },
+        {
+          "id": "stop-104",
+          "orderId": "ord-101",
+          "customerName": "Rajesh Kumar",
+          "address": "42 Jubilee Hills, Road No 10, Hyderabad, Telangana 500033",
+          "sku": "CYL-14.2",
+          "quantity": 2,
+          "amountPaise": 246800,
+          "status": "completed",
+          "eta": "2026-07-08T09:00:00Z",
+          "sortOrder": 4
+        }
+      ]
+    },
+    {
+      "id": "trip-2",
+      "driverId": "driver-2",
+      "date": "2026-07-08",
+      "stops": [
+        {
+          "id": "stop-201",
+          "orderId": "ord-201",
+          "customerName": "Sunita Reddy",
+          "address": "3-6-199, Himayat Nagar, Hyderabad, Telangana 500029",
+          "sku": "CYL-14.2",
+          "quantity": 1,
+          "amountPaise": 123400,
+          "status": "pending",
+          "eta": "2026-07-08T09:45:00Z",
+          "sortOrder": 1
+        },
+        {
+          "id": "stop-202",
+          "orderId": "ord-202",
+          "customerName": "Vikram Patel",
+          "address": "Plot 7, Hitech City Main Road, Madhapur, Hyderabad, Telangana 500081",
+          "sku": "CYL-5",
+          "quantity": 2,
+          "amountPaise": 196800,
+          "status": "pending",
+          "eta": "2026-07-08T10:30:00Z",
+          "sortOrder": 2
+        },
+        {
+          "id": "stop-203",
+          "orderId": "ord-203",
+          "customerName": "Ananya Gupta",
+          "address": "12A Kavuri Hills, Phase 2, Madhapur, Hyderabad, Telangana 500033",
+          "sku": "CYL-14.2",
+          "quantity": 1,
+          "amountPaise": 123400,
+          "status": "in_transit",
+          "eta": "2026-07-08T11:15:00Z",
+          "sortOrder": 3
+        }
+      ]
+    }
+  ],
+  "pending-actions": [
+    {
+      "id": "action-101",
+      "adminId": "admin-1",
+      "orderId": "ord-106",
+      "type": "payment_failed",
+      "priority": "high",
+      "customerName": "Amit Singh",
+      "address": "8A Film Nagar, Hyderabad",
+      "sku": "CYL-5",
+      "amountPaise": 98400,
+      "summary": "Payment failed after 3 retries — card declined",
+      "flaggedAt": "2026-07-08T09:15:00Z"
+    },
+    {
+      "id": "action-102",
+      "adminId": "admin-1",
+      "orderId": "ord-104",
+      "type": "address_conflict",
+      "priority": "high",
+      "customerName": "Priya Sharma",
+      "address": "15 Banjara Hills, Road No 5, Hyderabad",
+      "sku": "CYL-5",
+      "amountPaise": 295200,
+      "summary": "Customer reported wrong address on file — needs verification",
+      "flaggedAt": "2026-07-08T08:30:00Z"
+    },
+    {
+      "id": "action-103",
+      "adminId": "admin-1",
+      "orderId": "trip-1",
+      "type": "delay_report",
+      "priority": "medium",
+      "customerName": "Priya Sharma",
+      "address": "15 Banjara Hills, Road No 5, Hyderabad",
+      "sku": "",
+      "amountPaise": 0,
+      "summary": "Driver #1 reported 20 min delay due to traffic on Banjara Hills route",
+      "flaggedAt": "2026-07-08T10:05:00Z"
+    },
+    {
+      "id": "action-104",
+      "adminId": "admin-1",
+      "orderId": "ord-107",
+      "type": "refund_request",
+      "priority": "medium",
+      "customerName": "Amit Singh",
+      "address": "8A Film Nagar, Hyderabad",
+      "sku": "CYL-14.2",
+      "amountPaise": 123400,
+      "summary": "Customer requested refund — claims cylinder weight below standard",
+      "flaggedAt": "2026-07-08T07:45:00Z"
+    },
+    {
+      "id": "action-105",
+      "adminId": "admin-1",
+      "orderId": "driver-2",
+      "type": "compliance_check",
+      "priority": "low",
+      "customerName": "Driver #2 — Sunita route",
+      "address": "Himayat Nagar, Hyderabad",
+      "sku": "",
+      "amountPaise": 0,
+      "summary": "Monthly safety certification due for driver assigned to Trip #2",
+      "flaggedAt": "2026-07-08T06:00:00Z"
+    },
+    {
+      "id": "action-106",
+      "adminId": "admin-1",
+      "orderId": "inv-001",
+      "type": "inventory_shortage",
+      "priority": "low",
+      "customerName": "Warehouse — Jubilee Hills",
+      "address": "42 Jubilee Hills, Hyderabad",
+      "sku": "CYL-14.2",
+      "amountPaise": 0,
+      "summary": "Stock below threshold — only 12 cylinders remaining (reorder at 20)",
+      "flaggedAt": "2026-07-07T16:00:00Z"
+    }
+  ]
+}

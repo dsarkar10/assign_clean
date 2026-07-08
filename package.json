@@ -1,0 +1,11 @@
+{
+  "name": "clear-energy-takehome",
+  "private": true,
+  "scripts": {
+    "api": "npx json-server mock-api.json --port 4000",
+    "admin": "cd apps/admin-mobile && npx expo start",
+    "customer": "cd apps/customer && npx expo start",
+    "driver": "cd apps/driver && npx expo start",
+    "test": "cd packages/shared && npx vitest run"
+  }
+}
